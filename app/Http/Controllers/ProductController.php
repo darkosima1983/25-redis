@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Products;
+use App\Http\Requests\CreateProductRequest;
 class ProductController extends Controller
 {
     public function getAllProducts()
@@ -17,15 +18,9 @@ class ProductController extends Controller
     }
 
 
-    public function saveProduct(Request $request)
+    public function saveProduct(CreateProductRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-        ]);
-
-        Products::create($request->all());
+        Products::create($request->validated());
 
         return redirect()->route('products.all')->with('success', 'Produkt erfolgreich hinzugefügt!');
     }
