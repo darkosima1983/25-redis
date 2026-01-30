@@ -12,4 +12,5 @@ Route::controller(ProductController::class)
     Route::get('/all', 'getAllProducts')->name('all');
     Route::get('/create', 'createProduct')->name('create');
     Route::post('/save', 'saveProduct')->name('save');
-}); 
+    Route::get('/flush', 'flushCache')->name('flush');
+});
