@@ -23,6 +23,8 @@ class ProductController extends Controller
     {
         Products::create($request->validated());
 
+        Cache::forget('allProducts');
+
         return redirect()->route('products.all')->with('success', 'Produkt erfolgreich hinzugefügt!');
     }
 

@@ -16,10 +16,13 @@ class HomeController extends Controller
         } else {
             $products = Products::latest()->take(9)->get();
             Cache::put('allProducts', $products, 300); // Cache for 5 minutes
-        }*/
-        $products =Cache::remember('allProducts', 300, function() {
+        }   prvi nacin najduzi*/
+        /*$products =Cache::remember('allProducts', 300, function() {
             return Products::latest()->take(9)->get();
-        });
+        });*/ // drugi nacin kraci
+
+        $products =Cache::remember('allProducts', 300, fn() => Products::latest()->take(9)->get());
+        
         return view('welcome', ['products' => $products]);
     }
 }
