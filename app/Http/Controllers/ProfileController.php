@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\NewAvatarRequest;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class ProfileController extends Controller
 {
@@ -41,21 +42,21 @@ class ProfileController extends Controller
 
     public function changeAvatar(NewAvatarRequest $request)
     {
-       $user = $request->user();
+       
 
-        // (opciono) obriši staru sliku
-        if ($user->avatar) {
-            Storage::disk('public')->delete($user->avatar);
-        }
-
+        // obriši staru sliku
+       $avatar = Auth::user()->avatar;
+       if($avatar !== null){
+            File::delete("storage/images/avatars/$avatar");
+       }
         // snimi novu sliku
-        $path = $request->file('profile_image')->store('images', 'public');
+        $path = $request->file('profile_image')->store('images/avatars', 'public');
 
         $name = basename($path);
 
         // upiši u bazu
-        $user->update([
-            'image' => $name,
+        Auth::user()->update([
+            'avatar' => $name,
         ]);
 
         return redirect()
