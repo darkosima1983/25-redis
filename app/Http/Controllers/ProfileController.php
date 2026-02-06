@@ -11,6 +11,8 @@ use App\Http\Requests\NewAvatarRequest;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ProfileController extends Controller
 {
@@ -40,19 +42,22 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
-    public function changeAvatar(NewAvatarRequest $request)
+   public function changeAvatar(NewAvatarRequest $request)
     {
-       
-
         // obriši staru sliku
-       $avatar = Auth::user()->avatar;
-       if($avatar !== null){
+        $avatar = Auth::user()->avatar;
+        if($avatar !== null){
             File::delete("storage/images/avatars/$avatar");
-       }
-        // snimi novu sliku
-        $path = $request->file('profile_image')->store('images/avatars', 'public');
+        }
+        
+        $name = uniqid().".webp";
+        $file = $request->file('profile_image');
+        
+        // Intervention Image v3 sintaksa
+        $manager = new ImageManager(new Driver());
+        $image = $manager->read($file)->toWebp(90);
 
-        $name = basename($path);
+        Storage::disk('public')->put("images/avatars/$name", (string) $image);
 
         // upiši u bazu
         Auth::user()->update([

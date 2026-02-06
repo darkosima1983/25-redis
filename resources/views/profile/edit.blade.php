@@ -19,6 +19,10 @@
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
                         Profile image
                     </h2>
+                    <div>
+                        <img src="/storage/images/avatars/{{ Auth::user()->avatar ?? 'default.png' }}" alt="Profile Image" class="w-32 h-32 rounded-full mt-4">
+                    </div>
+
                     <form method="POST"
                         action="{{ route('profile.change-avatar') }}"
                         enctype="multipart/form-data"
